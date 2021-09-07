@@ -1,0 +1,1933 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CM.Text</name>
+    </assembly>
+    <members>
+        <member name="M:CM.Text.BusinessMessaging.BusinessMessagingApi.GetHttpPostBody(System.Guid,System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+                Gets the HTTP post body.
+            </summary>
+            <param name="apiKey">The API key.</param>
+            <param name="messageText">The message text.</param>
+            <param name="from">From.</param>
+            <param name="to">To.</param>
+            <param name="reference">The reference.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.BusinessMessagingApi.GetHttpPostBody(System.Guid,CM.Text.BusinessMessaging.Model.Message)">
+            <summary>
+                Gets the HTTP post body.
+            </summary>
+            <param name="apiKey">The API key.</param>
+            <param name="message">The message to send.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.BusinessMessagingApi.GetTextApiResult(System.String)">
+            <summary>
+                Transforms the BusinessMessageApi request result to TextClientResult.
+            </summary>
+            <param name="requestResultContent">Content of the request result.</param>
+            <returns></returns>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.CarouselBuilder">
+            <summary>
+                Builder class to construct a CarouselMessage.
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.CarouselBuilder.#ctor(CM.Text.BusinessMessaging.Model.MultiChannel.CarouselCardWidth)">
+            <summary>
+                Initializes the builder
+            </summary>
+            <param name="carouselCardWidth"></param>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.CarouselBuilder.AddCard(CM.Text.BusinessMessaging.Model.MultiChannel.RichCard)">
+            <summary>
+                Adds one card.
+            </summary>
+            <param name="card"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.CarouselBuilder.Build">
+            <summary>
+                Construct the carousel
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.MessageBuilder">
+            <summary>
+                Builder class to construct messages
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.MessageBuilder.#ctor(System.String,System.String,System.String[])">
+            <summary>
+                Creates a new MessageBuilder
+            </summary>
+            <param name="messageText"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.MessageBuilder.Build">
+            <summary>
+                Constructs the message.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.MessageBuilder.WithAllowedChannels(CM.Text.BusinessMessaging.Model.Channel[])">
+            <summary>
+                Adds the allowed channels field, which forces a message to only use certain routes.
+                You can define a list of which channels you want your message to use.
+                Not defining any channels will be interpreted as allowing all channels.
+            </summary>
+            <remarks>
+                Note that for channels other than SMS, CM needs to configure the out going flows.
+                For those flows to work, we need to be contacted.
+            </remarks>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.MessageBuilder.WithReference(System.String)">
+            <summary>
+                Add a reference to the message.
+            </summary>
+            <param name="reference"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.MessageBuilder.WithRichMessage(CM.Text.BusinessMessaging.Model.MultiChannel.IRichMessage)">
+            <summary>
+                Adds a message that replaces the <see cref="P:CM.Text.BusinessMessaging.Model.Message.Body" /> for channels that support
+                rich content (all channels except <see cref="F:CM.Text.BusinessMessaging.Model.Channel.SMS" />, <see cref="F:CM.Text.BusinessMessaging.Model.Channel.Voice" />
+                and <see cref="F:CM.Text.BusinessMessaging.Model.Channel.Push" /> at this moment)
+            </summary>
+            <param name="richMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.MessageBuilder.WithSuggestions(CM.Text.BusinessMessaging.Model.MultiChannel.SuggestionBase[])">
+            <summary>
+                Adds suggestions to the message. It is dependent on the channel that is used which
+                suggestions are supported.
+            </summary>
+            <param name="suggestions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.MessageBuilder.WitHybridAppKey(System.Guid)">
+            <summary>
+                Used for Hybrid messaging, see https://docs.cmtelecom.com/en/hybrid-messaging/v2.0.0 for more information
+                Messages will be sent over the <see cref="F:CM.Text.BusinessMessaging.Model.Channel.Push" /> channel.
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.Body">
+            <summary>
+                Represents the Body element of the message.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Body.Content">
+            <summary>
+                The actual text body of the message.
+                By default the CM gateway interprets messages as if sent with the standard 7 bit GSM encoding.
+                If you want to send messages using e.g. Arabic, Cyrillic of Greek characters
+                you will need to use the unicode UCS2 encoding.
+                Set the <see cref="P:CM.Text.BusinessMessaging.Model.Body.Type" /> to Auto to let the gateway do the encoding detection.
+                Please note that there are a few limitations to using unicode encoded messages:
+                Unicode messages can contain up to 70 characters. In the case of multipart messages, this becomes 66 characters per
+                part.
+                You will need to POST the XML or JSON file. A HTTP GET request cannot handle the Unicode characters
+                Another note is that not all operators in the world are able to handle Unicode messages, so you will need to test
+                for which operators it works.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Body.Type">
+            <summary>
+                When the type is set to 'auto' then the gateway will do the encoding detection.
+                In case it detects characters that are not part of the GSM character set,
+                the message will be delivered as Unicode.
+                If the message contains more than 70 characters in Unicode format it will be split into a
+                multipart message.
+                You can limit the number of parts by setting the maximum number of message parts.
+                <see cref="P:CM.Text.BusinessMessaging.Model.Message.MaximumNumberOfMessageParts" />
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.Channel">
+            <summary>
+                Used by <see cref="P:CM.Text.BusinessMessaging.Model.Message.AllowedChannels" /> to force a message to only use certain routes.
+            </summary>
+            <remarks>
+                Note that for channels other than SMS, CM needs to configure the out going flows.
+                For those flows to work, we need to be contacted.
+            </remarks>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.Channel.SMS">
+            <summary>
+                Messages will be sent as SMS text messages
+            </summary>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.Channel.WhatsApp">
+            <summary>
+                Send messages using WhatsApp for business
+            </summary>
+            <remarks>
+                Note that CM needs to configure this for you to work.
+            </remarks>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.Channel.Push">
+            <summary>
+                Sends messages to push using Hybrid messages.
+                See also https://docs.cmtelecom.com/en/hybrid-messaging/v2.0.0
+            </summary>
+            <remarks>Works only when <see cref="P:CM.Text.BusinessMessaging.Model.Message.HybridAppKey" /> is set</remarks>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.Channel.RCS">
+            <summary>
+                Messages will be sent over RCS.
+            </summary>
+            <remarks>
+                Note that CM needs to configure this for you to work.
+            </remarks>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.Channel.Viber">
+            <summary>
+                Messages will be sent over Viber.
+            </summary>
+            <remarks>
+                Note that CM needs to configure this for you to work.
+            </remarks>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.Channel.Voice">
+            <summary>
+                Messages will be sent using text to speech.
+            </summary>
+            <remarks>
+                Note that CM needs to configure this for you to work.
+            </remarks>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.Channel.iMessage">
+            <summary>
+                Messages will be sent over Apple Business Chat.
+            </summary>
+            <remarks>
+                Note that CM needs to configure this for you to work.
+            </remarks>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.Channel.Line">
+            <summary>
+                Messages will be sent over Line.
+            </summary>
+            <remarks>
+                Note that CM needs to configure this for you to work.
+            </remarks>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.Message">
+            <summary>
+                Represents one message. One message can be sent to multiple recipients.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.AllowedChannels">
+            <summary>
+                The allowed channels field forces a message to only use certain routes.
+                In this field you can define a list of which channels you want your message to use.
+                Not defining any channels will be interpreted as allowing all channels.
+            </summary>
+            <remarks>
+                Note that for channels other than SMS, CM needs to configure the out going flows.
+                For those flows to work, we need to be contacted.
+            </remarks>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.Body">
+            <summary>
+                Required: The actual text body of the message.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.CustomGrouping">
+            <summary>
+                The custom grouping field is an optional field that can be used to tag messages.
+                These tags are be used by CM products, like the Transactions API.
+                Applying custom grouping names to messages helps filter your messages.
+                With up to three levels of custom grouping fields that can be set, subsets of messages can be
+                further broken down. The custom grouping name can be up to 100 characters of your choosing.
+                It’s recommended to limit the number of unique custom groupings to 1000.
+                Please contact support in case you would like to exceed this number.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.CustomGrouping2">
+            <summary>
+                The custom grouping2 field, like <see cref="P:CM.Text.BusinessMessaging.Model.Message.CustomGrouping" /> is an optional field that can be used to tag
+                messages.
+                These tags are be used by CM products, like the Transactions API.
+                Applying custom grouping names to messages helps filter your messages.
+                With up to three levels of custom grouping fields that can be set, subsets of messages can be
+                further broken down. The custom grouping name can be up to 100 characters of your choosing.
+                It’s recommended to limit the number of unique custom groupings to 1000.
+                Please contact support in case you would like to exceed this number.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.CustomGrouping3">
+            <summary>
+                The custom grouping3 field, like <see cref="P:CM.Text.BusinessMessaging.Model.Message.CustomGrouping" /> and <see cref="P:CM.Text.BusinessMessaging.Model.Message.CustomGrouping2" /> is an optional
+                field that can be used to tag messages.
+                These tags are be used by CM products, like the Transactions API.
+                Applying custom grouping names to messages helps filter your messages.
+                With up to three levels of custom grouping fields that can be set, subsets of messages can be
+                further broken down. The custom grouping name can be up to 100 characters of your choosing.
+                It’s recommended to limit the number of unique custom groupings to 1000.
+                Please contact support in case you would like to exceed this number.
+            </summary>
+            <remarks>Default value within this SDK is <see cref="F:CM.Text.Common.Constant.TextSdkReference" /></remarks>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.From">
+            <summary>
+                Required: This is the sender name.
+                The maximum length is 11 alphanumerical characters or 16 digits. Example: 'CM Telecom'
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.HybridAppKey">
+            <summary>
+                Used for Hybrid messaging, see https://docs.cmtelecom.com/en/hybrid-messaging/v2.0.0 for more information
+                Messages will be sent over the <see cref="F:CM.Text.BusinessMessaging.Model.Channel.Push" /> channel.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.MaximumNumberOfMessageParts">
+            <summary>
+                Used when sending multipart or concatenated SMS messages and always used together with
+                <see cref="P:CM.Text.BusinessMessaging.Model.Message.MinimumNumberOfMessageParts" />.
+                Indicate the minimum and maximum of message parts that you allow the gateway to send for this
+                message.
+                Technically the gateway will first check if a message is larger than 160 characters, if so, the
+                message will be cut into multiple 153 characters parts limited by these parameters.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.MinimumNumberOfMessageParts">
+            <summary>
+                Used when sending multipart or concatenated SMS messages and always used together with
+                <see cref="P:CM.Text.BusinessMessaging.Model.Message.MaximumNumberOfMessageParts" />.
+                Indicate the minimum and maximum of message parts that you allow the gateway to send for this
+                message.
+                Technically the gateway will first check if a message is larger than 160 characters, if so, the
+                message will be cut into multiple 153 characters parts limited by these parameters.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.Recipients">
+            <summary>
+                Required: The destination mobile numbers.
+                This value should be in international format.
+                A single mobile number per request. Example: '00447911123456'
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.Reference">
+            <summary>
+                Optional: For each message you send, you can set a reference.
+                The given reference will be used in the status reports and MO replies for the message,
+                so you can link the messages to the sent batch.
+                For more information on status reports, see:
+                https://docs.cmtelecom.com/business-messaging/v1.0#/status_report_webhook
+                The given reference must be between 1 - 32 alphanumeric characters, and will not work using demo accounts.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Message.RichContent">
+            <summary>
+                Can be used by channels that support rich content (all channels except <see cref="F:CM.Text.BusinessMessaging.Model.Channel.SMS" />,
+                <see cref="F:CM.Text.BusinessMessaging.Model.Channel.Voice" /> and <see cref="F:CM.Text.BusinessMessaging.Model.Channel.Push" /> at this moment)
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.CalendarOptions">
+            <summary>
+                Contains information for a <see cref="T:CM.Text.BusinessMessaging.Model.MultiChannel.CalendarSuggestion" />.
+            </summary>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.MultiChannel.CalendarOptions.EndTime">
+            <summary>
+                The end of the appointment.
+            </summary>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.MultiChannel.CalendarOptions.StartTime">
+            <summary>
+                The start of the appointment.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.CalendarOptions.Description">
+            <summary>
+                The description which will appear in the calendar app
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.CalendarOptions.Title">
+            <summary>
+                The title of the appointment which will appear in the calendar app
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.CalendarSuggestion">
+            <summary>
+                A suggestion, used in <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS" />.
+                When the user clicks on the icon, it opens the calendar app of the user to add
+                the new appointment.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.CalendarSuggestion.Action">
+            <summary>
+                The action of this suggestion
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.CalendarSuggestion.Calendar">
+            <summary>
+                The options of the agenda item
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.Carousel">
+            <summary>
+                A carousel contains two or more <see cref="T:CM.Text.BusinessMessaging.Model.MultiChannel.RichCard" />s
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Carousel.Cards">
+            <summary>
+                The cards of the carousel
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Carousel.CarouselCardWidth">
+            <summary>
+                The width for the items of the carousel
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.CarouselCardWidth">
+            <summary>
+                Used by a <see cref="T:CM.Text.BusinessMessaging.Model.MultiChannel.Carousel" /> to set the width
+            </summary>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.MultiChannel.CarouselCardWidth.Small">
+            <summary>
+                Small cards
+            </summary>
+        </member>
+        <member name="F:CM.Text.BusinessMessaging.Model.MultiChannel.CarouselCardWidth.Medium">
+            <summary>
+                Medium sized cards
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.CarouselMessage">
+            <summary>
+                A message containing multiple carousels.
+                Currently only supported by <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS" />/
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.CarouselMessage.Carousel">
+            <summary>
+                Contains the rich cards
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.ContactMessage">
+             <summary>
+             Used to send one or multiple contacts, for now only supported in <see cref="F:CM.Text.BusinessMessaging.Model.Channel.WhatsApp"/>.
+            
+             See also https://developers.facebook.com/docs/whatsapp/api/messages/others#contacts
+             </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactMessage.Contacts">
+            <summary>
+            The contacts to send.
+            
+            See also https://developers.facebook.com/docs/whatsapp/api/messages/others#contacts
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.Contact">
+            <summary>
+            Represents 1 contact.
+            See also https://developers.facebook.com/docs/whatsapp/api/messages/others#contacts
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Contact.ContactAddresses">
+            <summary>
+            Full contact address(es)
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Contact.Birthday">
+            <summary>
+            YYYY-MM-DD formatted string of the birthday of the contact
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Contact.EmailAddresses">
+            <summary>
+            Contact email address(es)
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Contact.Name">
+            <summary>
+            Full contact name
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Contact.Organization">
+            <summary>
+            Contact organization information
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Contact.PhoneNumbers">
+            <summary>
+            Contact phone number(s)
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Contact.Urls">
+            <summary>
+            Contact URL(s)
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.ContactAddress">
+            <summary>
+            One address of a contact
+            See also https://developers.facebook.com/docs/whatsapp/api/messages/others#contacts
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactAddress.City">
+            <summary>
+            City name
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactAddress.Country">
+            <summary>
+            Full country name
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactAddress.CountryCode">
+            <summary>
+            Two-letter country abbreviation
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactAddress.State">
+            <summary>
+            State abbreviation
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactAddress.Street">
+            <summary>
+            Street number and name
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactAddress.Type">
+            <summary>
+            Standard Values: HOME, WORK
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactAddress.ZipCode">
+            <summary>
+            ZIP code
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.ContactEmail">
+            <summary>
+            One email address of a contact.
+            See also https://developers.facebook.com/docs/whatsapp/api/messages/others#contacts
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactEmail.EmailAddress">
+            <summary>
+            Email address
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactEmail.Type">
+            <summary>
+            Standard Values: HOME, WORK
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.ContactName">
+            <summary>
+            The name of a contact.
+            See also https://developers.facebook.com/docs/whatsapp/api/messages/others#contacts
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactName.FirstName">
+            <summary>
+            First name
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactName.LastName">
+            <summary>
+            Last name
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactName.MiddleName">
+            <summary>
+            Middle name
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactName.NamePrefix">
+            <summary>
+            Name prefix
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactName.NameSuffix">
+            <summary>
+            Name suffix
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactName.FormattedName">
+            <summary>
+            Full name as it normally appears
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.ContactOrganization">
+            <summary>
+            The organization of a contact
+            See also https://developers.facebook.com/docs/whatsapp/api/messages/others#contacts
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactOrganization.Company">
+            <summary>
+            Name of the contact's company
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactOrganization.Department">
+            <summary>
+            Name of the contact's department
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactOrganization.Title">
+            <summary>
+            Contact's business title
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.ContactPhoneNumber">
+            <summary>
+            Phone number of a contact
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactPhoneNumber.Phone">
+            <summary>
+            The phone number of the contact
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactPhoneNumber.Type">
+            <summary>
+            Standard Values: CELL, MAIN, IPHONE, HOME, WORK
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.ContactUrl">
+            <summary>
+            An Url for a contact
+            See also https://developers.facebook.com/docs/whatsapp/api/messages/others#contacts
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactUrl.Url">
+            <summary>
+            URL
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ContactUrl.Type">
+            <summary>
+            Standard Values: HOME, WORK
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.Dial">
+            <summary>
+                Contains information for a <see cref="T:CM.Text.BusinessMessaging.Model.MultiChannel.DialSuggestion" />
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Dial.PhoneNumber">
+            <summary>
+                The number to call (in international format)
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.DialSuggestion">
+            <summary>
+                A suggestion, used in <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS" />
+                When you want to enable the user can call you, or listen to a recorded spoken message,
+                this suggestion can be applied. When clicked starts a new call.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.DialSuggestion.Action">
+            <summary>
+                The action of this suggestion
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.DialSuggestion.Dial">
+            <summary>
+                The dial options
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.IRichMessage">
+            <summary>
+                One element in a <see cref="P:CM.Text.BusinessMessaging.Model.MultiChannel.RichContent.Conversation" />
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.LocationPushMessage">
+            <summary>
+            Used to send a location, supported by (most) <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS"/> connections
+            and <see cref="F:CM.Text.BusinessMessaging.Model.Channel.WhatsApp"/>.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.LocationPushMessage.Location">
+            <summary>
+            The location options to send.
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.MediaContent">
+            <summary>
+                Object containing information about an image, a video or an audio file.
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.Model.MultiChannel.MediaContent.#ctor">
+            <summary>
+                Default constructor
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.Model.MultiChannel.MediaContent.#ctor(System.String,System.String,System.String)">
+            <summary>
+                Constructor which sets values
+            </summary>
+            <param name="mediaName"></param>
+            <param name="mediaUri"></param>
+            <param name="mimeType"></param>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.MediaContent.MediaName">
+            <summary>
+                The name of the image, audio or video.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.MediaContent.MediaUri">
+            <summary>
+                The location of the image, audio or video.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.MediaContent.MimeType">
+            <summary>
+                The mimetype of the image, audio or video.
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.MediaMessage">
+            <summary>
+                A message, which can be used for rich content channels such as
+                <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS" />, <see cref="F:CM.Text.BusinessMessaging.Model.Channel.WhatsApp" /> and <see cref="F:CM.Text.BusinessMessaging.Model.Channel.Viber" />.
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.Model.MultiChannel.MediaMessage.#ctor">
+            <summary>
+                Default constructor.
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.Model.MultiChannel.MediaMessage.#ctor(System.String,System.String,System.String)">
+            <summary>
+                Constructor setting values.
+            </summary>
+            <param name="mediaName"></param>
+            <param name="mediaUri"></param>
+            <param name="mimeType"></param>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.MediaMessage.Media">
+            <summary>
+                The image or video of the message.
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.OpenUrlSuggestion">
+            <summary>
+                This is used to give the user an option to open a link.
+            </summary>
+            <remarks>
+                For <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS" /> this can be an in-app link,
+                which will only be shown when the app is installed.
+            </remarks>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.OpenUrlSuggestion.Action">
+            <summary>
+                The action of this suggestion
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.OpenUrlSuggestion.Url">
+            <summary>
+                The url the end user can open
+            </summary>
+            <remarks>
+                For <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS" /> this can be an in-app link,
+                which will only be shown when the app is installed.
+            </remarks>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.ReplySuggestion">
+            <summary>
+                A suggestion to give the user the option to give a quick reply in <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS" />
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ReplySuggestion.Action">
+            <summary>
+                The action of this suggestion
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.RichCard">
+            <summary>
+                A rich card, which can be used for <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS" />.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.RichCard.Header">
+            <summary>
+                Optional: the header for a rich card
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.RichCard.Media">
+            <summary>
+                The image or video of the card.
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.RichContent">
+            <summary>
+                Can be used by channels that support rich content (all channels except <see cref="F:CM.Text.BusinessMessaging.Model.Channel.SMS" />,
+                <see cref="F:CM.Text.BusinessMessaging.Model.Channel.Voice" /> and <see cref="F:CM.Text.BusinessMessaging.Model.Channel.Push" /> at this moment)
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.Model.MultiChannel.RichContent.#ctor">
+            <summary>
+                Initializes a rich content object
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.RichContent.Conversation">
+            <summary>
+                The messages.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.RichContent.Suggestions">
+            <summary>
+                The suggestions
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.Model.MultiChannel.RichContent.AddConversationPart(CM.Text.BusinessMessaging.Model.MultiChannel.IRichMessage)">
+            <summary>
+                Adds a message, such as a <see cref="T:CM.Text.BusinessMessaging.Model.MultiChannel.RichCard" /> or <see cref="T:CM.Text.BusinessMessaging.Model.MultiChannel.TextMessage" />.
+            </summary>
+            <param name="part"></param>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.Model.MultiChannel.RichContent.AddSuggestion(CM.Text.BusinessMessaging.Model.MultiChannel.SuggestionBase)">
+            <summary>
+                Adds a suggestion
+            </summary>
+            <param name="suggestion"></param>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.SuggestionBase">
+            <summary>
+                Suggestions can be used in several channels, not all channels
+                support all suggestions.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.SuggestionBase.Action">
+            <summary>
+                The action of this suggestion
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.SuggestionBase.Label">
+            <summary>
+                The text the end user will see
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.SuggestionBase.PostbackData">
+            <summary>
+                When the item is selected and the postback data is set, then the Postback data will be
+                sent in a MO instead of the <see cref="P:CM.Text.BusinessMessaging.Model.MultiChannel.SuggestionBase.Label" />.
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateMessage">
+            <summary>
+            Used to send a template message, at this moment only supported in <see cref="F:CM.Text.BusinessMessaging.Model.Channel.WhatsApp"/>.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateMessage.Whatsapp">
+            <summary>
+            The WhatsApp template message
+            </summary>
+            <remarks>Templates need to be configured by CM and approved by Whatsapp before it is possible
+            to send these messages.
+            </remarks>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.TextMessage">
+            <summary>
+                A regular text message, replaces the <see cref="P:CM.Text.BusinessMessaging.Model.Message.Body" /> for channels
+                that support rich content (all channels except <see cref="F:CM.Text.BusinessMessaging.Model.Channel.SMS" />, <see cref="F:CM.Text.BusinessMessaging.Model.Channel.Voice" />
+                and <see cref="F:CM.Text.BusinessMessaging.Model.Channel.Push" /> at this moment)
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.Model.MultiChannel.TextMessage.#ctor">
+            <summary>
+                Construct an empty text message.
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.Model.MultiChannel.TextMessage.#ctor(System.String)">
+            <summary>
+                Construct a text message and initialise the <see cref="P:CM.Text.BusinessMessaging.Model.MultiChannel.TextMessage.Text" />
+            </summary>
+            <param name="text"></param>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.TextMessage.Text">
+            <summary>
+            A plain text message, when used it replaces the 'SMS' body text.
+            In <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS"/>, when used in combination with an header and/or media this
+            will be set as the text of a rich card.
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions">
+            <summary>
+                The options for a <see cref="T:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationSuggestion" /> in <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS" />.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions.Label">
+            <summary>
+                Optional: The label to display at the pin
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions.Latitude">
+            <summary>
+                The latitude in degrees
+            </summary>
+            <example>51.603802</example>
+            <remarks>Either Latitude and <see cref="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions.Longitude" /> or <see cref="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions.SearchQuery" /> is required </remarks>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions.Longitude">
+            <summary>
+                The longitude in degrees
+            </summary>
+            <example>4.770821</example>
+            <remarks>Either <see cref="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions.Latitude" /> and Longitude or <see cref="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions.SearchQuery" /> is required </remarks>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions.SearchQuery">
+            <summary>
+                Search for this location instead of using the latitude/longitude.
+            </summary>
+            <remarks>
+                Either <see cref="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions.Latitude" /> and <see cref="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions.Longitude" /> or SearchQuery is required.
+                For other connections both may be required.
+            </remarks>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationOptions.Radius">
+            <summary>
+            Can be used in some <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS"/> connections to display a radius instead of only a pointer
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationSuggestion">
+            <summary>
+                Opens the navigation app of the user with a pin at the specified location in <see cref="F:CM.Text.BusinessMessaging.Model.Channel.RCS" />.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationSuggestion.Action">
+            <summary>
+                The action of this suggestion
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.ViewLocationSuggestion.Location">
+            <summary>
+                The location options
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.WhatsappTemplate">
+            <summary>
+            Whatsapp template, see https://developers.facebook.com/docs/whatsapp/api/messages/message-templates for more information
+            Used only in <see cref="F:CM.Text.BusinessMessaging.Model.Channel.WhatsApp"/>.
+            </summary>
+            <remarks>Templates need to be configured by CM and approved by Whatsapp before it is possible
+            to send these messages.
+            </remarks>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.WhatsappTemplate.Namespace">
+            <summary>
+            Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            The namespace that will be used
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.WhatsappTemplate.Name">
+            <summary>
+            Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            The element name that indicates which template to use within the namespace
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.WhatsappTemplate.Language">
+            <summary>
+            Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            Allows for the specification of a deterministic or fallback language.
+            
+            The language parameter sets the language policy for an Message Template;
+            you can set it to either fallback or deterministic.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.WhatsappTemplate.LocalizableParams">
+            <summary>
+            Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            This field is an array of values to apply to variables in the template
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.LocalizableParam">
+            <summary>
+            Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            This field is an array of values to apply to variables in the template
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.LocalizableParam.Default">
+            <summary>
+            Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            
+            Default text if localization fails
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.LocalizableParam.Currency">
+            <summary>
+            Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            
+            If the currency object is used, it contains required parameters currency_code and amount_1000.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.LocalizableParam.DateTime">
+            <summary>
+            Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            
+            If the date_time object is used, further definition of the date and time is required. 
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateCurrency">
+             <summary>
+             Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            
+             Object to make it possible to use a localized currency format.
+             If the currency object is used, it contains required parameters currency_code and amount_1000.
+             </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateCurrency.CurrencyCode">
+            <summary>
+            Currency code, for example USD or EUR
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateCurrency.Amount">
+            <summary>
+            Amount in currency_code times 1000
+            </summary>
+            <example>50110 EUR becomes €50.11 in the message</example>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateDateTime">
+            <summary>
+            Used to localize a date/time in a message based on the end-users settings.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateDateTime.Component">
+            <summary>
+            The date component as described in https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateDateTime.#ctor(System.DateTime)">
+            <summary>
+            Constructor initializing the component.
+            </summary>
+            <param name="moment"></param>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateDateTimeComponent">
+            <summary>
+            Used to localize a date time as described in
+            https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateDateTimeComponent.DayOfWeek">
+            <summary>
+            The day of the week.
+            </summary>
+            <remarks>There will be no checking whether this is correct,</remarks>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateDateTimeComponent.DayOfMonth">
+            <summary>
+            The day of the month.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateDateTimeComponent.Year">
+            <summary>
+            The year.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateDateTimeComponent.Month">
+            <summary>
+            The month.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateDateTimeComponent.Hour">
+            <summary>
+            The hour (24 hour notation)
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateDateTimeComponent.Minute">
+            <summary>
+            The minute of the hour.
+            </summary>
+        </member>
+        <member name="M:CM.Text.BusinessMessaging.Model.MultiChannel.TemplateDateTimeComponent.#ctor(System.DateTime)">
+            <summary>
+            Constructor initializing the values.
+            </summary>
+            <param name="moment"></param>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.MultiChannel.Language">
+            <summary>
+            Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            The language parameter sets the language policy for an Message Template;
+            you can set it to either fallback or deterministic.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Language.Code">
+            <summary>
+            Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            The code of the language or locale to use — Accepts both language and language_locale formats (e.g., en and en_US).
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.MultiChannel.Language.Policy">
+            <summary>
+            Source: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates
+            Options: fallback, deterministic
+            The language policy the message should follow
+            </summary>
+        </member>
+        <member name="T:CM.Text.BusinessMessaging.Model.Recipient">
+            <summary>
+                A destination mobile number.
+            </summary>
+        </member>
+        <member name="P:CM.Text.BusinessMessaging.Model.Recipient.Number">
+            <summary>
+                This value should be in international format.
+                A single mobile number per request. Example: '00447911123456'
+            </summary>
+        </member>
+        <member name="T:CM.Text.TextClient">
+            <summary>
+                This class provides methods to send text messages.
+            </summary>
+        </member>
+        <member name="M:CM.Text.TextClient.#ctor(System.Guid)">
+            <summary>
+                Initializes a new instance of the <see cref="T:CM.Text.TextClient" /> class.
+            </summary>
+            <param name="apiKey">The API key.</param>
+        </member>
+        <member name="M:CM.Text.TextClient.#ctor(System.Guid,System.Net.Http.HttpClient)">
+            <summary>
+                Initializes a new instance of the <see cref="T:CM.Text.TextClient" /> class.
+            </summary>
+            <param name="apiKey">The API key.</param>
+            <param name="httpClient">An optional HTTP client.</param>
+        </member>
+        <member name="M:CM.Text.TextClient.SendMessageAsync(System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.String,System.Threading.CancellationToken)">
+            <summary>
+                Sends a message asynchronous.
+            </summary>
+            <param name="messageText">The message text.</param>
+            <param name="from">
+                This is the sender name. The maximum length is 11 alphanumerical characters or 16 digits. Example:
+                'CM Telecom'.
+            </param>
+            <param name="to">
+                These are the destination mobile numbers. Restrictions: this value should be in international format.
+                Example: '00447911123456'.
+            </param>
+            <param name="reference">
+                Here you can include your message reference. This information will be returned in a status
+                report so you can match the message and it's status. Restrictions: 1 - 32 alphanumeric characters and reference
+                will not work for demo accounts.
+            </param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CM.Text.TextClient.SendMessageAsync(CM.Text.BusinessMessaging.Model.Message,System.Threading.CancellationToken)">
+            <summary>
+                Sends a message asynchronous.
+            </summary>
+            <param name="message">The message to send.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="T:CM.Text.TextClientMessageDetail">
+            <summary>
+                Data model that contains detailed message information per recipient.
+            </summary>
+        </member>
+        <member name="P:CM.Text.TextClientMessageDetail.details">
+            <summary>
+                Message details.
+            </summary>
+            <value>
+                The details.
+            </value>
+        </member>
+        <member name="P:CM.Text.TextClientMessageDetail.parts">
+            <summary>
+                The amount of parts a message is split up to.
+            </summary>
+            <value>
+                The parts.
+            </value>
+        </member>
+        <member name="P:CM.Text.TextClientMessageDetail.reference">
+            <summary>
+                The reference to a message.
+            </summary>
+            <value>
+                The reference.
+            </value>
+        </member>
+        <member name="P:CM.Text.TextClientMessageDetail.status">
+            <summary>
+                The status of a message.
+            </summary>
+            <value>
+                The status.
+            </value>
+        </member>
+        <member name="P:CM.Text.TextClientMessageDetail.to">
+            <summary>
+                The recipient.
+            </summary>
+            <value>
+                To.
+            </value>
+        </member>
+        <member name="T:CM.Text.TextClientResult">
+            <summary>
+                Data model that's returned after interaction with CM.com's Text interface.
+            </summary>
+        </member>
+        <member name="P:CM.Text.TextClientResult.details">
+            <summary>
+                Gets or sets the details for each message.
+            </summary>
+            <value>
+                The details.
+            </value>
+        </member>
+        <member name="P:CM.Text.TextClientResult.statusCode">
+            <summary>
+                Gets or sets the status code.
+            </summary>
+            <value>
+                The status code.
+            </value>
+        </member>
+        <member name="P:CM.Text.TextClientResult.statusMessage">
+            <summary>
+                A message that describes the result.
+            </summary>
+            <value>
+                The status message.
+            </value>
+        </member>
+        <member name="T:CM.Text.TextClientStatusCode">
+            <summary>
+                TextClientResult status codes
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.Ok">
+            <summary>
+                Ok
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.AuthenticationFailed">
+            <summary>
+                Authentication failed.
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.BalanceInsufficient">
+            <summary>
+                Insufficient balance.
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.ApiKeyIncorrect">
+            <summary>
+                Incorrect API key.
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.NotAllSent">
+            <summary>
+                This request has one or more errors in its messages. Some or all messages have not been sent.
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.RequestMalformed">
+            <summary>
+                Malformed request
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.MsgArrayIncorrect">
+            <summary>
+                The MSG array is incorrect.
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.FromFieldInvalid">
+            <summary>
+                From field invalid
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.ToFieldInvalid">
+            <summary>
+                To field invalid
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.MsisdnInvalid">
+            <summary>
+                MSISDN invalid
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.BodyFieldInvalid">
+            <summary>
+                Body field invalid
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.FieldInvalid">
+            <summary>
+                Field invalid
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.SpamFiltered">
+            <summary>
+                Spam filtered
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.BlackListed">
+            <summary>
+                Black listed
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.Rejected">
+            <summary>
+                Rejected
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.InternalServerError">
+            <summary>
+                Internal server error
+            </summary>
+        </member>
+        <member name="F:CM.Text.TextClientStatusCode.Unknown">
+            <summary>
+                Unknown error, please contact CM support
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.CanBeNullAttribute">
+            <summary>
+                Indicates that the value of the marked element could be <c>null</c> sometimes,
+                so the check for <c>null</c> is necessary before its usage.
+            </summary>
+            <example>
+                <code>
+            [CanBeNull] object Test() => null;
+            
+            void UseTest() {
+              var p = Test();
+              var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:JetBrains.Annotations.NotNullAttribute">
+            <summary>
+                Indicates that the value of the marked element could never be <c>null</c>.
+            </summary>
+            <example>
+                <code>
+            [NotNull] object Foo() {
+              return null; // Warning: Possible 'null' assignment
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:JetBrains.Annotations.ItemNotNullAttribute">
+            <summary>
+                Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+                and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+                or of the Lazy.Value property can never be null.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ItemCanBeNullAttribute">
+            <summary>
+                Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+                and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+                or of the Lazy.Value property can be null.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ImplicitNotNullAttribute">
+            <summary>
+                Implicitly apply [NotNull]/[ItemNotNull] annotation to all the of type members and parameters
+                in particular scope where this annotation is used (type declaration or whole assembly).
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.StringFormatMethodAttribute">
+            <summary>
+                Indicates that the marked method builds string by format pattern and (optional) arguments.
+                Parameter, which contains format string, should be given in constructor. The format string
+                should be in <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])" />-like form.
+            </summary>
+            <example>
+                <code>
+            [StringFormatMethod("message")]
+            void ShowError(string message, params object[] args) { /* do something */ }
+            
+            void Foo() {
+              ShowError("Failed: {0}"); // Warning: Non-existing argument in format string
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:JetBrains.Annotations.StringFormatMethodAttribute.#ctor(System.String)">
+            <param name="formatParameterName">
+                Specifies which parameter of an annotated method should be treated as format-string
+            </param>
+        </member>
+        <member name="T:JetBrains.Annotations.ValueProviderAttribute">
+            <summary>
+                For a parameter that is expected to be one of the limited set of values.
+                Specify fields of which type should be used as values for this parameter.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.InvokerParameterNameAttribute">
+            <summary>
+                Indicates that the function argument should be string literal and match one
+                of the parameters of the caller function. For example, ReSharper annotates
+                the parameter of <see cref="T:System.ArgumentNullException" />.
+            </summary>
+            <example>
+                <code>
+            void Foo(string param) {
+              if (param == null)
+                throw new ArgumentNullException("par"); // Warning: Cannot resolve symbol
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:JetBrains.Annotations.NotifyPropertyChangedInvocatorAttribute">
+            <summary>
+                Indicates that the method is contained in a type that implements
+                <c>System.ComponentModel.INotifyPropertyChanged</c> interface and this method
+                is used to notify that some property value changed.
+            </summary>
+            <remarks>
+                The method should be non-static and conform to one of the supported signatures:
+                <list>
+                    <item>
+                        <c>NotifyChanged(string)</c>
+                    </item>
+                    <item>
+                        <c>NotifyChanged(params string[])</c>
+                    </item>
+                    <item>
+                        <c>NotifyChanged{T}(Expression{Func{T}})</c>
+                    </item>
+                    <item>
+                        <c>NotifyChanged{T,U}(Expression{Func{T,U}})</c>
+                    </item>
+                    <item>
+                        <c>SetProperty{T}(ref T, T, string)</c>
+                    </item>
+                </list>
+            </remarks>
+            <example>
+                <code>
+             public class Foo : INotifyPropertyChanged {
+               public event PropertyChangedEventHandler PropertyChanged;
+             
+               [NotifyPropertyChangedInvocator]
+               protected virtual void NotifyChanged(string propertyName) { ... }
+            
+               string _name;
+             
+               public string Name {
+                 get { return _name; }
+                 set { _name = value; NotifyChanged("LastName"); /* Warning */ }
+               }
+             }
+             </code>
+                Examples of generated notifications:
+                <list>
+                    <item>
+                        <c>NotifyChanged("Property")</c>
+                    </item>
+                    <item>
+                        <c>NotifyChanged(() =&gt; Property)</c>
+                    </item>
+                    <item>
+                        <c>NotifyChanged((VM x) =&gt; x.Property)</c>
+                    </item>
+                    <item>
+                        <c>SetProperty(ref myField, value, "Property")</c>
+                    </item>
+                </list>
+            </example>
+        </member>
+        <member name="T:JetBrains.Annotations.ContractAnnotationAttribute">
+            <summary>
+                Describes dependency between method input and output.
+            </summary>
+            <syntax>
+                <p>Function Definition Table syntax:</p>
+                <list>
+                    <item>FDT      ::= FDTRow [;FDTRow]*</item>
+                    <item>FDTRow   ::= Input =&gt; Output | Output &lt;= Input</item>
+                    <item>Input    ::= ParameterName: Value [, Input]*</item>
+                    <item>Output   ::= [ParameterName: Value]* {halt|stop|void|nothing|Value}</item>
+                    <item>Value    ::= true | false | null | notnull | canbenull</item>
+                </list>
+                If method has single input parameter, it's name could be omitted.<br />
+                Using <c>halt</c> (or <c>void</c>/<c>nothing</c>, which is the same)
+                for method output means that the methos doesn't return normally.<br />
+                <c>canbenull</c> annotation is only applicable for output parameters.<br />
+                You can use multiple <c>[ContractAnnotation]</c> for each FDT row,
+                or use single attribute with rows separated by semicolon.<br />
+            </syntax>
+            <examples>
+                <list>
+                    <item>
+                        <code>
+            [ContractAnnotation("=> halt")]
+            public void TerminationMethod()
+            </code>
+                    </item>
+                    <item>
+                        <code>
+            [ContractAnnotation("halt &lt;= condition: false")]
+            public void Assert(bool condition, string text) // regular assertion method
+            </code>
+                    </item>
+                    <item>
+                        <code>
+            [ContractAnnotation("s:null => true")]
+            public bool IsNullOrEmpty(string s) // string.IsNullOrEmpty()
+            </code>
+                    </item>
+                    <item>
+                        <code>
+            // A method that returns null if the parameter is null,
+            // and not null if the parameter is not null
+            [ContractAnnotation("null => null; notnull => notnull")]
+            public object Transform(object data) 
+            </code>
+                    </item>
+                    <item>
+                        <code>
+            [ContractAnnotation("s:null=>false; =>true,result:notnull; =>false, result:null")]
+            public bool TryParse(string s, out Person result)
+            </code>
+                    </item>
+                </list>
+            </examples>
+        </member>
+        <member name="T:JetBrains.Annotations.LocalizationRequiredAttribute">
+            <summary>
+                Indicates that marked element should be localized or not.
+            </summary>
+            <example>
+                <code>
+            [LocalizationRequiredAttribute(true)]
+            class Foo {
+              string str = "my string"; // Warning: Localizable string
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:JetBrains.Annotations.CannotApplyEqualityOperatorAttribute">
+            <summary>
+                Indicates that the value of the marked type (or its derivatives)
+                cannot be compared using '==' or '!=' operators and <c>Equals()</c>
+                should be used instead. However, using '==' or '!=' for comparison
+                with <c>null</c> is always permitted.
+            </summary>
+            <example>
+                <code>
+            [CannotApplyEqualityOperator]
+            class NoEquality { }
+            
+            class UsesNoEquality {
+              void Test() {
+                var ca1 = new NoEquality();
+                var ca2 = new NoEquality();
+                if (ca1 != null) { // OK
+                  bool condition = ca1 == ca2; // Warning
+                }
+              }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:JetBrains.Annotations.BaseTypeRequiredAttribute">
+            <summary>
+                When applied to a target attribute, specifies a requirement for any type marked
+                with the target attribute to implement or inherit specific type or types.
+            </summary>
+            <example>
+                <code>
+            [BaseTypeRequired(typeof(IComponent)] // Specify requirement
+            class ComponentAttribute : Attribute { }
+            
+            [Component] // ComponentAttribute requires implementing IComponent interface
+            class MyComponent : IComponent { }
+            </code>
+            </example>
+        </member>
+        <member name="T:JetBrains.Annotations.UsedImplicitlyAttribute">
+            <summary>
+                Indicates that the marked symbol is used implicitly (e.g. via reflection, in external library),
+                so this symbol will not be marked as unused (as well as by other usage inspections).
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.MeansImplicitUseAttribute">
+            <summary>
+                Should be used on attributes and causes ReSharper to not mark symbols marked with such attributes
+                as unused (as well as by other usage inspections)
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Access">
+            <summary>Only entity marked with attribute considered used.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Assign">
+            <summary>Indicates implicit assignment to a member.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature">
+            <summary>
+                Indicates implicit instantiation of a type with fixed constructor signature.
+                That means any unused constructor parameters won't be reported as such.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature">
+            <summary>Indicates implicit instantiation of a type.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ImplicitUseTargetFlags">
+            <summary>
+                Specify what is considered used implicitly when marked
+                with <see cref="T:JetBrains.Annotations.MeansImplicitUseAttribute" /> or <see cref="T:JetBrains.Annotations.UsedImplicitlyAttribute" />.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseTargetFlags.Members">
+            <summary>Members of entity marked with attribute are considered used.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseTargetFlags.WithMembers">
+            <summary>Entity marked with attribute and all its members considered used.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PublicAPIAttribute">
+            <summary>
+                This attribute is intended to mark publicly available API
+                which should not be removed and so is treated as used.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.InstantHandleAttribute">
+            <summary>
+                Tells code analysis engine if the parameter is completely handled when the invoked method is on stack.
+                If the parameter is a delegate, indicates that delegate is executed while the method is executed.
+                If the parameter is an enumerable, indicates that it is enumerated while the method is executed.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PureAttribute">
+            <summary>
+                Indicates that a method does not make any observable state changes.
+                The same as <c>System.Diagnostics.Contracts.PureAttribute</c>.
+            </summary>
+            <example>
+                <code>
+            [Pure] int Multiply(int x, int y) => x * y;
+            
+            void M() {
+              Multiply(123, 42); // Waring: Return value of pure method is not used
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:JetBrains.Annotations.MustUseReturnValueAttribute">
+            <summary>
+                Indicates that the return value of method invocation must be used.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ProvidesContextAttribute">
+            <summary>
+                Indicates the type member or parameter of some type, that should be used instead of all other ways
+                to get the value that type. This annotation is useful when you have some "context" value evaluated
+                and stored somewhere, meaning that all other ways to get this value must be consolidated with existing one.
+            </summary>
+            <example>
+                <code>
+            class Foo {
+              [ProvidesContext] IBarService _barService = ...;
+            
+              void ProcessNode(INode node) {
+                DoSomething(node, node.GetGlobalServices().Bar);
+                //              ^ Warning: use value of '_barService' field
+              }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:JetBrains.Annotations.PathReferenceAttribute">
+            <summary>
+                Indicates that a parameter is a path to a file or a folder within a web project.
+                Path can be relative or absolute, starting from web root (~).
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.SourceTemplateAttribute">
+            <summary>
+                An extension method marked with this attribute is processed by ReSharper code completion
+                as a 'Source Template'. When extension method is completed over some expression, it's source code
+                is automatically expanded like a template at call site.
+            </summary>
+            <remarks>
+                Template method body can contain valid source code and/or special comments starting with '$'.
+                Text inside these comments is added as source code when the template is applied. Template parameters
+                can be used either as additional method parameters or as identifiers wrapped in two '$' signs.
+                Use the <see cref="T:JetBrains.Annotations.MacroAttribute" /> attribute to specify macros for parameters.
+            </remarks>
+            <example>
+                In this example, the 'forEach' method is a source template available over all values
+                of enumerable types, producing ordinary C# 'foreach' statement and placing caret inside block:
+                <code>
+            [SourceTemplate]
+            public static void forEach&lt;T&gt;(this IEnumerable&lt;T&gt; xs) {
+              foreach (var x in xs) {
+                 //$ $END$
+              }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:JetBrains.Annotations.MacroAttribute">
+            <summary>
+                Allows specifying a macro for a parameter of a <see cref="T:JetBrains.Annotations.SourceTemplateAttribute">source template</see>.
+            </summary>
+            <remarks>
+                You can apply the attribute on the whole method or on any of its additional parameters. The macro expression
+                is defined in the <see cref="P:JetBrains.Annotations.MacroAttribute.Expression" /> property. When applied on a method, the target
+                template parameter is defined in the <see cref="P:JetBrains.Annotations.MacroAttribute.Target" /> property. To apply the macro silently
+                for the parameter, set the <see cref="P:JetBrains.Annotations.MacroAttribute.Editable" /> property value = -1.
+            </remarks>
+            <example>
+                Applying the attribute on a source template method:
+                <code>
+            [SourceTemplate, Macro(Target = "item", Expression = "suggestVariableName()")]
+            public static void forEach&lt;T&gt;(this IEnumerable&lt;T&gt; collection) {
+              foreach (var item in collection) {
+                //$ $END$
+              }
+            }
+            </code>
+                Applying the attribute on a template method parameter:
+                <code>
+            [SourceTemplate]
+            public static void something(this Entity x, [Macro(Expression = "guid()", Editable = -1)] string newguid) {
+              /*$ var $x$Id = "$newguid$" + x.ToString();
+              x.DoSomething($x$Id); */
+            }
+            </code>
+            </example>
+        </member>
+        <member name="P:JetBrains.Annotations.MacroAttribute.Editable">
+            <summary>
+                Allows specifying which occurrence of the target parameter becomes editable when the template is deployed.
+            </summary>
+            <remarks>
+                If the target parameter is used several times in the template, only one occurrence becomes editable;
+                other occurrences are changed synchronously. To specify the zero-based index of the editable occurrence,
+                use values >= 0. To make the parameter non-editable when the template is expanded, use -1.
+            </remarks>
+            >
+        </member>
+        <member name="P:JetBrains.Annotations.MacroAttribute.Expression">
+            <summary>
+                Allows specifying a macro that will be executed for a <see cref="T:JetBrains.Annotations.SourceTemplateAttribute">source template</see>
+                parameter when the template is expanded.
+            </summary>
+        </member>
+        <member name="P:JetBrains.Annotations.MacroAttribute.Target">
+            <summary>
+                Identifies the target parameter of a <see cref="T:JetBrains.Annotations.SourceTemplateAttribute">source template</see> if the
+                <see cref="T:JetBrains.Annotations.MacroAttribute" /> is applied on a template method.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcActionAttribute">
+            <summary>
+                ASP.NET MVC attribute. If applied to a parameter, indicates that the parameter
+                is an MVC action. If applied to a method, the MVC action name is calculated
+                implicitly from the context. Use this attribute for custom wrappers similar to
+                <c>System.Web.Mvc.Html.ChildActionExtensions.RenderAction(HtmlHelper, String)</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcAreaAttribute">
+            <summary>
+                ASP.NET MVC attribute. Indicates that a parameter is an MVC area.
+                Use this attribute for custom wrappers similar to
+                <c>System.Web.Mvc.Html.ChildActionExtensions.RenderAction(HtmlHelper, String)</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcControllerAttribute">
+            <summary>
+                ASP.NET MVC attribute. If applied to a parameter, indicates that the parameter is
+                an MVC controller. If applied to a method, the MVC controller name is calculated
+                implicitly from the context. Use this attribute for custom wrappers similar to
+                <c>System.Web.Mvc.Html.ChildActionExtensions.RenderAction(HtmlHelper, String, String)</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcMasterAttribute">
+            <summary>
+                ASP.NET MVC attribute. Indicates that a parameter is an MVC Master. Use this attribute
+                for custom wrappers similar to <c>System.Web.Mvc.Controller.View(String, String)</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcModelTypeAttribute">
+            <summary>
+                ASP.NET MVC attribute. Indicates that a parameter is an MVC model type. Use this attribute
+                for custom wrappers similar to <c>System.Web.Mvc.Controller.View(String, Object)</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcPartialViewAttribute">
+            <summary>
+                ASP.NET MVC attribute. If applied to a parameter, indicates that the parameter is an MVC
+                partial view. If applied to a method, the MVC partial view name is calculated implicitly
+                from the context. Use this attribute for custom wrappers similar to
+                <c>System.Web.Mvc.Html.RenderPartialExtensions.RenderPartial(HtmlHelper, String)</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcSuppressViewErrorAttribute">
+            <summary>
+                ASP.NET MVC attribute. Allows disabling inspections for MVC views within a class or a method.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcDisplayTemplateAttribute">
+            <summary>
+                ASP.NET MVC attribute. Indicates that a parameter is an MVC display template.
+                Use this attribute for custom wrappers similar to
+                <c>System.Web.Mvc.Html.DisplayExtensions.DisplayForModel(HtmlHelper, String)</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcEditorTemplateAttribute">
+            <summary>
+                ASP.NET MVC attribute. Indicates that a parameter is an MVC editor template.
+                Use this attribute for custom wrappers similar to
+                <c>System.Web.Mvc.Html.EditorExtensions.EditorForModel(HtmlHelper, String)</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcTemplateAttribute">
+            <summary>
+                ASP.NET MVC attribute. Indicates that a parameter is an MVC template.
+                Use this attribute for custom wrappers similar to
+                <c>System.ComponentModel.DataAnnotations.UIHintAttribute(System.String)</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcViewAttribute">
+            <summary>
+                ASP.NET MVC attribute. If applied to a parameter, indicates that the parameter
+                is an MVC view component. If applied to a method, the MVC view name is calculated implicitly
+                from the context. Use this attribute for custom wrappers similar to
+                <c>System.Web.Mvc.Controller.View(Object)</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcViewComponentAttribute">
+            <summary>
+                ASP.NET MVC attribute. If applied to a parameter, indicates that the parameter
+                is an MVC view component name.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcViewComponentViewAttribute">
+            <summary>
+                ASP.NET MVC attribute. If applied to a parameter, indicates that the parameter
+                is an MVC view component view. If applied to a method, the MVC view component view name is default.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AspMvcActionSelectorAttribute">
+            <summary>
+                ASP.NET MVC attribute. When applied to a parameter of an attribute,
+                indicates that this parameter is an MVC action name.
+            </summary>
+            <example>
+                <code>
+            [ActionName("Foo")]
+            public ActionResult Login(string returnUrl) {
+              ViewBag.ReturnUrl = Url.Action("Foo"); // OK
+              return RedirectToAction("Bar"); // Error: Cannot resolve action
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:JetBrains.Annotations.RazorSectionAttribute">
+            <summary>
+                Razor attribute. Indicates that a parameter or a method is a Razor section.
+                Use this attribute for custom wrappers similar to
+                <c>System.Web.WebPages.WebPageBase.RenderSection(String)</c>.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.CollectionAccessAttribute">
+            <summary>
+                Indicates how method, constructor invocation or property access
+                over collection type affects content of the collection.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.CollectionAccessType.None">
+            <summary>Method does not use or modify content of the collection.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.CollectionAccessType.Read">
+            <summary>Method only reads content of the collection but does not modify it.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.CollectionAccessType.ModifyExistingContent">
+            <summary>Method can change content of the collection but does not add new elements.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.CollectionAccessType.UpdatedContent">
+            <summary>Method can add new elements to the collection.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AssertionMethodAttribute">
+            <summary>
+                Indicates that the marked method is assertion method, i.e. it halts control flow if
+                one of the conditions is satisfied. To set the condition, mark one of the parameters with
+                <see cref="T:JetBrains.Annotations.AssertionConditionAttribute" /> attribute.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AssertionConditionAttribute">
+            <summary>
+                Indicates the condition parameter of the assertion method. The method itself should be
+                marked by <see cref="T:JetBrains.Annotations.AssertionMethodAttribute" /> attribute. The mandatory argument of
+                the attribute is the assertion type.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.AssertionConditionType">
+            <summary>
+                Specifies assertion type. If the assertion method argument satisfies the condition,
+                then the execution continues. Otherwise, execution is assumed to be halted.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.AssertionConditionType.IS_TRUE">
+            <summary>Marked parameter should be evaluated to true.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.AssertionConditionType.IS_FALSE">
+            <summary>Marked parameter should be evaluated to false.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.AssertionConditionType.IS_NULL">
+            <summary>Marked parameter should be evaluated to null value.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.AssertionConditionType.IS_NOT_NULL">
+            <summary>Marked parameter should be evaluated to not null value.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.TerminatesProgramAttribute">
+            <summary>
+                Indicates that the marked method unconditionally terminates control flow execution.
+                For example, it could unconditionally throw exception.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.LinqTunnelAttribute">
+            <summary>
+                Indicates that method is pure LINQ method, with postponed enumeration (like Enumerable.Select,
+                .Where). This annotation allows inference of [InstantHandle] annotation for parameters
+                of delegate type by analyzing LINQ method chains.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.NoEnumerationAttribute">
+            <summary>
+                Indicates that IEnumerable, passed as parameter, is not enumerated.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.RegexPatternAttribute">
+            <summary>
+                Indicates that parameter is regular expression pattern.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.XamlItemsControlAttribute">
+            <summary>
+                XAML attribute. Indicates the type that has <c>ItemsSource</c> property and should be treated
+                as <c>ItemsControl</c>-derived type, to enable inner items <c>DataContext</c> type resolve.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.XamlItemBindingOfItemsControlAttribute">
+            <summary>
+                XAML attribute. Indicates the property of some <c>BindingBase</c>-derived type, that
+                is used to bind some item of <c>ItemsControl</c>-derived type. This annotation will
+                enable the <c>DataContext</c> type resolve for XAML bindings for such properties.
+            </summary>
+            <remarks>
+                Property should have the tree ancestor of the <c>ItemsControl</c> type or
+                marked with the <see cref="T:JetBrains.Annotations.XamlItemsControlAttribute" /> attribute.
+            </remarks>
+        </member>
+        <member name="T:JetBrains.Annotations.NoReorder">
+            <summary>
+                Prevents the Member Reordering feature from tossing members of the marked class.
+            </summary>
+            <remarks>
+                The attribute must be mentioned in your member reordering patterns
+            </remarks>
+        </member>
+    </members>
+</doc>
